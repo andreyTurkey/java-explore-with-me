@@ -23,7 +23,7 @@
     </properties>
 
     <modules>
-        <module>stat_svc</module>
+        <module>stats-server</module>
         <!--<module>server</module>-->
     </modules>
 
