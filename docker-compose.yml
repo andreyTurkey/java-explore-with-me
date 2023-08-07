@@ -1,7 +1,7 @@
 version: '3.1'
 services:
   stat_svc:
-    build: ./stat_svc/stat-service
+    build: ./stats-server/stat-service
     image: stat-svc-image
     container_name: emv-stats-server
     ports:
