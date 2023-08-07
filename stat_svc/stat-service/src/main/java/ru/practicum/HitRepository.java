@@ -16,6 +16,7 @@ public interface HitRepository extends JpaRepository<Hit, Long> {
                                              @Param("start") LocalDateTime startDecoded,
                                              @Param("end") LocalDateTime endDecoded);
 
+    
     @Query("SELECT new ru.practicum.ViewStats (h.app, h.uri, count(h.ip)) from Hit h " +
             "WHERE h.uri in (:uris) AND h.timestamp between :start AND :end group by h.uri, h.app")
     List<ViewStats> findAllByUriWithoutDistinct(@Param("uris") Collection<String> uris,
