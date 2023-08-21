@@ -24,7 +24,8 @@
 
     <modules>
         <module>stats-server</module>
-        <!--<module>server</module>-->
+        <module>main-server</module>
+
     </modules>
 
     <build>

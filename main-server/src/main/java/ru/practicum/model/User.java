@@ -1,22 +1,21 @@
-package ru.practicum;
+package ru.practicum.model;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import javax.persistence.*;
 
 @Entity
-@Table(name = "apps", schema = "public")
+@Table(name = "users", schema = "public")
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Getter
 @Setter
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor
-public class App {
+@ToString
+public class User {
 
-    
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,4 +23,7 @@ public class App {
 
     @Column(name = "name", nullable = false)
     String name;
+
+    @Column(name = "email", nullable = false)
+    String email;
 }
