@@ -27,12 +27,13 @@ public class PublicEventController {
                                                     @RequestParam(value = "rangeEnd", required = false) String rangeEnd,
                                                     @RequestParam(value = "onlyAvailable", defaultValue = "false") Boolean onlyAvailable,
                                                     @RequestParam(value = "sort", required = false) String sort,
-                                                    @RequestParam(value = "from", defaultValue =  "0") Integer from,
-                                                    @RequestParam(value = "size", defaultValue = "10") Integer size) {
+                                                    @RequestParam(value = "from", defaultValue = "0") Integer from,
+                                                    @RequestParam(value = "size", defaultValue = "10") Integer size,
+                                                    HttpServletRequest request) {
         log.debug("Запрос событий c параметрами: text {}, categories {}, paid {}, rangeStart {}, rangeEnd {}, onlyAvailable {}," +
                         " from {}, size {}"
                 , text, categories, paid, rangeStart, rangeEnd, onlyAvailable, from, size);
-        return publicService.getEventsByParameters(text, categories, paid, rangeStart, rangeEnd, onlyAvailable, sort, from, size);
+        return publicService.getEventsByParameters(text, categories, paid, rangeStart, rangeEnd, onlyAvailable, sort, from, size, request);
     }
 
     @GetMapping(value = "{eventId}")

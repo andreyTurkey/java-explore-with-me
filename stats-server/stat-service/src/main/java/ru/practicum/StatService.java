@@ -22,6 +22,8 @@ public class StatService {
     static DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     public HitDto addHit(HitDto hitDto) {
+
+
         hitRepository.save(HitMapper.getHit(hitDto));
         return hitDto;
     }
@@ -31,9 +33,6 @@ public class StatService {
                 dateTimeFormatter);
         LocalDateTime endDecoded = LocalDateTime.parse((URLDecoder.decode(end, StandardCharsets.UTF_8)),
                 dateTimeFormatter);
-
-        //LocalDateTime startDecoded = LocalDateTime.parse(start, dateTimeFormatter);
-        //LocalDateTime endDecoded = LocalDateTime.parse(end, dateTimeFormatter);
 
         if (unique.equals("false") && uris != null) {                       // Со списком не уникальный
             return hitRepository.findAllByUriWithoutDistinct(uris, startDecoded, endDecoded)

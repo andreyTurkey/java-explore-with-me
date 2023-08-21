@@ -7,6 +7,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import ru.practicum.EwmClient;
+import ru.practicum.HitDto;
 import ru.practicum.dto.CategoryDto;
 import ru.practicum.dto.CompilationDto;
 import ru.practicum.dto.EventFullDto;
@@ -48,6 +50,13 @@ public class PublicService {
     ViewRepository viewRepository;
 
     CategoryRepository categoryRepository;
+
+    EwmClient ewmClient;
+
+    final String uriPrefix = "/events";
+
+    final String nameService = "ewm_main_service";
+
 
     static DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
@@ -107,7 +116,17 @@ public class PublicService {
                                                     Boolean onlyAvailable,
                                                     String sort,
                                                     Integer from,
-                                                    Integer size) {
+                                                    Integer size,
+                                                    HttpServletRequest request) {
+        HitDto hitDto = HitDto.builder()
+                .app(nameService)
+                .ip(request.getRequestURI())
+                .uri(uriPrefix)
+                .timestamp(LocalDateTime.now())
+                .build();
+
+        ewmClient.addHit(hitDto);
+
 
         if (rangeEnd != null) {
             if (LocalDateTime.parse(rangeEnd, dateTimeFormatter).isBefore(LocalDateTime.now().plusHours(2))) {
@@ -130,6 +149,15 @@ public class PublicService {
     }
 
     public EventFullDto getEventById(Long eventId, HttpServletRequest request) {
+        HitDto hitDto = HitDto.builder()
+                .app(nameService)
+                .ip(request.getRequestURI())
+                .uri(uriPrefix + "/" + eventId)
+                .timestamp(LocalDateTime.now())
+                .build();
+
+        ewmClient.addHit(hitDto);
+
         Event event = eventRepository.getReferenceById(eventId);
 
         if (!event.getState().equals(State.PUBLISHED)) {

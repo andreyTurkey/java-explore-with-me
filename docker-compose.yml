@@ -13,6 +13,7 @@ services:
       - POSTGRES_USER=andr
       - POSTGRES_PASSWORD=root
 
+
   stats-db:
     image: postgres:14-alpine
     build:
@@ -25,3 +26,31 @@ services:
       - POSTGRES_DB=ewm
       - POSTGRES_USER=andr
       - POSTGRES_PASSWORD=root
+
+
+  main_svc:
+    build: ./main-server
+    image: main-svc-image
+    container_name: main-server
+    ports:
+      - "8080:8080"
+    depends_on:
+      - main-db
+    environment:
+      - URL=jdbc:postgresql://ewm-stats-db:5432/ewm_main
+      - POSTGRES_USER=andr
+      - POSTGRES_PASSWORD=root
+
+  main-db:
+    image: postgres:14-alpine
+    build:
+      context: ./
+      dockerfile: ./Dockerfile.postgres
+    container_name: ewm-main-db
+    ports:
+      - "6542:5432"
+    environment:
+      - POSTGRES_DB=ewm_main
+      - POSTGRES_USER=andr
+      - POSTGRES_PASSWORD=root
+
