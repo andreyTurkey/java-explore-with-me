@@ -9,13 +9,13 @@ services:
     depends_on:
       - stats-db
     environment:
-      - URL=jdbc:postgresql://ewm-stats-db:5432/ewm
-      - POSTGRES_USER=andr
-      - POSTGRES_PASSWORD=root
+      - Stat_URL=jdbc:postgresql://ewm-stats-db:5432/ewm
+      - Stat_USER=andr
+      - Stat_PASSWORD=root
 
 
   stats-db:
-    image: postgres:14-alpine
+    image: postgres:14-alpine-stat
     build:
       context: ./
       dockerfile: ./Dockerfile.postgres
@@ -37,15 +37,15 @@ services:
     depends_on:
       - main-db
     environment:
-      - URL=jdbc:postgresql://ewm-stats-db:5432/ewm_main
-      - POSTGRES_USER=andr
-      - POSTGRES_PASSWORD=root
+      - Main_URL=jdbc:postgresql://ewm-stats-db:5432/ewm_main
+      - Main_USER=andr
+      - Main_PASSWORD=root
 
   main-db:
-    image: postgres:14-alpine
+    image: postgres:14-alpine-main
     build:
       context: ./
-      dockerfile: ./Dockerfile.postgres
+      dockerfile: ./Dockerfile.main
     container_name: ewm-main-db
     ports:
       - "6542:5432"
