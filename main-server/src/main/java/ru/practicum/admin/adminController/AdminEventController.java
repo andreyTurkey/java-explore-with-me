@@ -40,8 +40,8 @@ public class AdminEventController {
                                                    @RequestParam(value = "rangeEnd", required = false) String rangeEnd,
                                                    @Min(0) @RequestParam(value = "from", defaultValue = "0") Integer from,
                                                    @Min(1) @RequestParam(value = "size", defaultValue = "10") Integer size) {
-        log.debug("Запрос событий по параметрам: пользователи {}, статусы {}, категории {}, старт {}, финиш {}, from {}, size {}"
-                , users, states, categories, rangeStart, rangeEnd, from, size);
+        log.debug("Запрос событий по параметрам: пользователи {}, статусы {}, категории {}, старт {}, финиш {}, from {}, " +
+                "size {}", users, states, categories, rangeStart, rangeEnd, from, size);
         return adminService.getEventsByParameter(users, states, categories, rangeStart, rangeEnd, from, size);
     }
 }

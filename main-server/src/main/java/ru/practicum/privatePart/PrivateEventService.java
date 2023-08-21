@@ -107,7 +107,7 @@ public class PrivateEventService {
         }
 
         if (!(event.getParticipantLimit() == 0)) {
-            if (event.getConfirmedRequests() .equals(event.getParticipantLimit())) {
+            if (event.getConfirmedRequests().equals(event.getParticipantLimit())) {
                 throw new DuplicationException("Лимит на участие исчерпан при добавлении нового запроса");
             } else {
                 pr.setStatus(State.PENDING);

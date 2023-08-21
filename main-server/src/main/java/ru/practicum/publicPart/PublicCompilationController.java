@@ -20,8 +20,7 @@ public class PublicCompilationController {
     public List<CompilationDto> getCompilationByParameters(@RequestParam(value = "pinned", required = false) Boolean pinned,
                                                            @RequestParam(value = "from", defaultValue = "0") Integer from,
                                                            @RequestParam(value = "size", defaultValue = "10") Integer size) {
-        log.debug("Запрос подборок c параметрами: pinned {}, from {}, size {} "
-                , pinned, from, size);
+        log.debug("Запрос подборок c параметрами: pinned {}, from {}, size {} ",pinned, from, size);
         return publicService.getCompilationByParameters(pinned, from, size);
     }
 
