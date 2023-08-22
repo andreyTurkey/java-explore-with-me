@@ -127,7 +127,7 @@ public class PublicService {
                 .timestamp(LocalDateTime.now())
                 .build();
 
-        //ewmClient.addHit(hitDto);
+        ewmClient.addHit(hitDto);
 
         if (rangeEnd != null) {
             if (LocalDateTime.parse(rangeEnd, dateTimeFormatter).isBefore(LocalDateTime.now().plusHours(2))) {
@@ -157,7 +157,7 @@ public class PublicService {
                 .timestamp(LocalDateTime.now())
                 .build();
 
-        //ewmClient.addHit(hitDto);
+        ewmClient.addHit(hitDto);
 
         Event event = eventRepository.getReferenceById(eventId);
 
