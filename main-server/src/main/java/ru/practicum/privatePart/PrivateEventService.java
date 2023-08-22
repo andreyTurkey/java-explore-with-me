@@ -82,6 +82,9 @@ public class PrivateEventService {
 
     @Transactional
     public CreateParticipationAnswer addRequest(Long userId, Long eventId) {
+        if (participationRequestRepository.existsByRequesterId(userId)) {
+            throw new DuplicationException("Запрос уже существует.");
+        }
         if (eventId < 1) {
             throw new DuplicationException("ID события должно быть больше 0");
         }

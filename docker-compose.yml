@@ -14,7 +14,6 @@ services:
       - Stat_USER=andr
       - Stat_PASSWORD=root
 
-
   stats-db:
     image: postgres:14-alpine-stat
     build:
@@ -27,7 +26,6 @@ services:
       - POSTGRES_DB=ewm
       - POSTGRES_USER=andr
       - POSTGRES_PASSWORD=root
-
 
   main_svc:
     build: ./main-server

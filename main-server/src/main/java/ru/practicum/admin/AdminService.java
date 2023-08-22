@@ -45,11 +45,10 @@ public class AdminService {
 
     @Transactional
     public UserDto addUser(NewUserRequest newUserRequest) {
-        try {
-            userRepository.save(UserMapper.getUser(newUserRequest));
-        } catch (Exception ex) {
-            throw new DuplicationException("Имя пользователя существует");
+        if (userRepository.existsByName(newUserRequest.getName())) {
+            throw new DuplicationException("Имя уже существует.");
         }
+        userRepository.save(UserMapper.getUser(newUserRequest));
         return UserMapper.getUserDto(userRepository.findByEmail(newUserRequest.getEmail()));
     }
 
