@@ -4,6 +4,7 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "locations", schema = "public")
@@ -13,7 +14,7 @@ import javax.persistence.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Location {
+public class Location implements Serializable {
 
     @Id
     @Column(name = "id")
@@ -24,8 +25,8 @@ public class Location {
     String description;
 
     @Column(name = "lat", nullable = false)
-    Float lat; // Широта
+    Float lat;
 
     @Column(name = "lon", nullable = false)
-    Float lon; // Долгота
+    Float lon;
 }

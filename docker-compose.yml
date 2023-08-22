@@ -40,7 +40,7 @@ services:
       - main-db
     environment:
       - Main_URL=jdbc:postgresql://ewm-main-db:5432/ewm_main
-      - Main_USER=andr
+      - Main_USER=postgres
       - Main_PASSWORD=root
 
   main-db:
@@ -53,6 +53,6 @@ services:
       - "6542:5432"
     environment:
       - POSTGRES_DB=ewm_main
-      - POSTGRES_USER=andr
+      - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=root
 
