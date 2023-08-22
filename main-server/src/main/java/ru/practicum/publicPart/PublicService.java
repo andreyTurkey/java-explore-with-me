@@ -53,6 +53,8 @@ public class PublicService {
 
     EwmClient ewmClient;
 
+    EwmClientTest ewmClientTest;
+
     final String uriPrefix = "/events";
 
     final String nameService = "ewm_main_service";
@@ -125,7 +127,8 @@ public class PublicService {
                 .timestamp(LocalDateTime.now())
                 .build();
 
-        ewmClient.addHit(hitDto);
+        //ewmClient.addHit(hitDto);
+        ewmClientTest.sendHitDto(hitDto);
 
 
         if (rangeEnd != null) {

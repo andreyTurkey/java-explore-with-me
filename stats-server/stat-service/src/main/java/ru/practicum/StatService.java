@@ -23,7 +23,6 @@ public class StatService {
 
     public HitDto addHit(HitDto hitDto) {
 
-
         hitRepository.save(HitMapper.getHit(hitDto));
         return hitDto;
     }
