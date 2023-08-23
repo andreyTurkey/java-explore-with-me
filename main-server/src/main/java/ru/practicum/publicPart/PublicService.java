@@ -53,8 +53,6 @@ public class PublicService {
 
     EwmClient ewmClient;
 
-    EwmClientTest ewmClientTest;
-
     final String uriPrefix = "/events";
 
     final String nameService = "ewm_main_service";

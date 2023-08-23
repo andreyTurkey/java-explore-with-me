@@ -40,6 +40,7 @@ services:
       - Main_URL=jdbc:postgresql://ewm-main-db:5432/ewm_main
       - Main_USER=postgres
       - Main_PASSWORD=root
+      - STATS_URL=http://stats-server:9090
 
   main-db:
     image: postgres:14-alpine-main
