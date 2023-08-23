@@ -12,7 +12,6 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @NoArgsConstructor
-@EqualsAndHashCode
 public class Hit {
 
     @Id
@@ -20,8 +19,8 @@ public class Hit {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    @Column(name = "app", nullable = false)
-    String app;
+    @Column(name = "app_id", nullable = false)
+    Integer app;
 
     @Column(name = "uri", nullable = false)
     String uri;

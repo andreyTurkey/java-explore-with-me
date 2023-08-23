@@ -10,6 +10,7 @@ import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,11 +21,18 @@ public class StatService {
 
     HitRepository hitRepository;
 
+    AppRepository appRepository;
+
     static DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     public HitDto addHit(HitDto hitDto) {
-
-        hitRepository.save(HitMapper.getHit(hitDto));
+        if (!appRepository.existsByName(hitDto.getApp())) {
+            App newApp = new App();
+            newApp.setName(hitDto.getApp());
+            appRepository.save(newApp);
+        }
+        App app = appRepository.getAppByName(hitDto.getApp());
+        hitRepository.save(HitMapper.getHit(hitDto, app.getId()));
         return hitDto;
     }
 
@@ -39,9 +47,12 @@ public class StatService {
         }
 
         if (unique.equals("false") && uris != null) {                       // Со списком не уникальный
+            if (uris.size() == 0) {
+                return new ArrayList<>();
+            }
             return hitRepository.findAllByUriWithoutDistinct(uris, startDecoded, endDecoded)
                     .stream()
-                    .sorted((x1,x2) -> x2.getHits().compareTo(x1.getHits()))
+                    .sorted((x1, x2) -> x2.getHits().compareTo(x1.getHits()))
                     .map(ViewStatMapper::getViewStatsDto)
                     .collect(Collectors.toList());
         }
@@ -49,7 +60,7 @@ public class StatService {
         if (unique.equals("false")) {                                       // Без списка не уникальный
             return hitRepository.findAllWithoutUrisWithoutDistinct(startDecoded, endDecoded)
                     .stream()
-                    .sorted((x1,x2) -> x2.getHits().compareTo(x1.getHits()))
+                    .sorted((x1, x2) -> x2.getHits().compareTo(x1.getHits()))
                     .map(ViewStatMapper::getViewStatsDto)
                     .collect(Collectors.toList());
         }
@@ -57,14 +68,14 @@ public class StatService {
         if (uris == null && unique.equals("true")) {                     // Без списка уникальный
             return hitRepository.findAllWithoutUriDistinct(startDecoded, endDecoded)
                     .stream()
-                    .sorted((x1,x2) -> x2.getHits().compareTo(x1.getHits()))
+                    .sorted((x1, x2) -> x2.getHits().compareTo(x1.getHits()))
                     .map(ViewStatMapper::getViewStatsDto)
                     .collect(Collectors.toList());
         }
         if (unique.equals("true")) {                                            // Со списком  уникальный
             return hitRepository.findAllByUriWithDistinct(uris, startDecoded, endDecoded)
                     .stream()
-                    .sorted((x1,x2) -> x2.getHits().compareTo(x1.getHits()))
+                    .sorted((x1, x2) -> x2.getHits().compareTo(x1.getHits()))
                     .map(ViewStatMapper::getViewStatsDto)
                     .collect(Collectors.toList());
         }
