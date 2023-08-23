@@ -4,6 +4,7 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
+import ru.practicum.exception.NotAvailableException;
 
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
@@ -32,6 +33,10 @@ public class StatService {
                 dateTimeFormatter);
         LocalDateTime endDecoded = LocalDateTime.parse((URLDecoder.decode(end, StandardCharsets.UTF_8)),
                 dateTimeFormatter);
+
+        if (endDecoded.isBefore(LocalDateTime.now())) {
+            throw new NotAvailableException("Даты выборки указаны неверно.");
+        }
 
         if (unique.equals("false") && uris != null) {                       // Со списком не уникальный
             return hitRepository.findAllByUriWithoutDistinct(uris, startDecoded, endDecoded)
