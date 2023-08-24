@@ -1,4 +1,4 @@
-package ru.practicum.admin.adminController;
+package ru.practicum.admin.controller;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.admin.AdminService;
+import ru.practicum.admin.service.EventService;
 import ru.practicum.dto.EventFullDto;
 import ru.practicum.model.State;
 import ru.practicum.model.UpdateEventAdminRequest;
@@ -21,15 +21,15 @@ import java.util.List;
 @RestController
 @RequestMapping(path = "/admin/events")
 @AllArgsConstructor
-public class AdminEventController {
+public class EventController {
 
-    private final AdminService adminService;
+    private final EventService eventService;
 
     @PatchMapping(value = "/{eventId}")
     public ResponseEntity<Object> updateEvent(@Valid @RequestBody UpdateEventAdminRequest body,
                                               @Positive @PathVariable("eventId") Long eventId) {
         log.debug("Запрос на добавление нового события {} eventId - {}", body, eventId);
-        return new ResponseEntity<>(adminService.updateEvent(body, eventId), HttpStatus.OK);
+        return new ResponseEntity<>(eventService.updateEvent(body, eventId), HttpStatus.OK);
     }
 
     @GetMapping
@@ -42,6 +42,6 @@ public class AdminEventController {
                                                    @Min(1) @RequestParam(value = "size", defaultValue = "10") Integer size) {
         log.debug("Запрос событий по параметрам: пользователи {}, статусы {}, категории {}, старт {}, финиш {}, from {}, " +
                 "size {}", users, states, categories, rangeStart, rangeEnd, from, size);
-        return adminService.getEventsByParameter(users, states, categories, rangeStart, rangeEnd, from, size);
+        return eventService.getEventsByParameter(users, states, categories, rangeStart, rangeEnd, from, size);
     }
 }

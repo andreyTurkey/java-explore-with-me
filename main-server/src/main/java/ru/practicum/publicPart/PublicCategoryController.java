@@ -2,6 +2,7 @@ package ru.practicum.publicPart;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.dto.CategoryDto;
 
@@ -10,6 +11,7 @@ import java.util.List;
 
 @Slf4j
 @RestController
+@Validated
 @RequestMapping(path = "/categories")
 @AllArgsConstructor
 public class PublicCategoryController {

@@ -1,11 +1,12 @@
-package ru.practicum.admin.adminController;
+package ru.practicum.admin.controller;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.admin.AdminService;
+import ru.practicum.admin.service.UserService;
 import ru.practicum.dto.UserDto;
 import ru.practicum.model.NewUserRequest;
 import ru.practicum.model.User;
@@ -16,17 +17,18 @@ import java.util.List;
 import java.util.Objects;
 
 @Slf4j
+@Validated
 @RestController
 @RequestMapping(path = "/admin/users")
 @AllArgsConstructor
-public class AdminUserController {
+public class UserController {
 
-    private final AdminService adminService;
+    private UserService userService;
 
     @PostMapping
     public ResponseEntity<UserDto> addUser(@Valid @RequestBody NewUserRequest body) {
         log.debug("Запрос на добавление нового пользователя {}", body);
-        return new ResponseEntity<>(adminService.addUser(body), HttpStatus.CREATED);
+        return new ResponseEntity<>(userService.addUser(body), HttpStatus.CREATED);
     }
 
     @GetMapping
@@ -34,13 +36,13 @@ public class AdminUserController {
                                     @RequestParam(value = "from", defaultValue = "0") Integer from,
                                     @RequestParam(value = "size", defaultValue = "10") Integer size) {
         log.debug("Запрошены пользователи ID = {}", ids);
-        return adminService.getUsers(ids, from, size);
+        return userService.getUsers(ids, from, size);
     }
 
     @DeleteMapping(value = "{userId}")
     public ResponseEntity<Objects> deleteUser(@Positive @PathVariable("userId") Long userId) {
         log.debug("Запрошено удаление пользователя с ID = {}", userId);
-        adminService.deleteUser(userId);
+        userService.deleteUser(userId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
