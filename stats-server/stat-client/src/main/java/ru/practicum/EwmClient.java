@@ -17,7 +17,7 @@ import java.util.Map;
 public class EwmClient extends BaseClient {
 
     @Autowired
-    public EwmClient(@Value("http://stats-server:9090") String serverUrl, RestTemplateBuilder builder) {
+    public EwmClient(@Value("${stat-server.url}") String serverUrl, RestTemplateBuilder builder) {
         super(
                 builder
                         .uriTemplateHandler(new DefaultUriBuilderFactory(serverUrl))
