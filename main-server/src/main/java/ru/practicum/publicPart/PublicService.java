@@ -3,12 +3,15 @@ package ru.practicum.publicPart;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import ru.practicum.EwmClient;
 import ru.practicum.HitDto;
+import ru.practicum.ViewStatsDto;
 import ru.practicum.dto.CategoryDto;
 import ru.practicum.dto.CompilationDto;
 import ru.practicum.dto.EventFullDto;
@@ -20,22 +23,19 @@ import ru.practicum.mapper.EventMapper;
 import ru.practicum.model.Compilation;
 import ru.practicum.model.Event;
 import ru.practicum.model.State;
-import ru.practicum.model.View;
 import ru.practicum.repository.CategoryRepository;
 import ru.practicum.repository.CompilationRepository;
 import ru.practicum.repository.EventRepository;
-import ru.practicum.repository.ViewRepository;
 import ru.practicum.searchingService.SearchingEventsByParameters;
 
 import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -46,8 +46,6 @@ public class PublicService {
     SearchingEventsByParameters searchingEventsByParameters;
 
     EventRepository eventRepository;
-
-    ViewRepository viewRepository;
 
     CategoryRepository categoryRepository;
 
@@ -133,7 +131,7 @@ public class PublicService {
             }
         }
 
-        return searchingEventsByParameters.getAllEventsByParameters(text,
+        List<Event> events = searchingEventsByParameters.getAllEventsByParameters(text,
                         categories,
                         paid,
                         rangeStart,
@@ -143,11 +141,76 @@ public class PublicService {
                         from,
                         size)
                 .stream()
-                .map(EventMapper::getEventFullDto)
                 .collect(Collectors.toList());
+
+        Map<Long, Long> views = viewExtractor(events, null);
+
+        List<EventFullDto> eventFullDtos = events.stream().map(EventMapper::getEventFullDto).collect(Collectors.toList());
+
+        List<Long> newKeys = new ArrayList<>(views.keySet()); // получили все ключи - eventId
+
+        for (EventFullDto event : eventFullDtos) {
+            if (views.containsKey(event.getId())) {
+                event.setViews(views.get(event.getId()));
+            }
+        }
+        return eventFullDtos;
+    }
+
+    private Map<Long, Long> viewExtractor(List<Event> events, Event oldEvent) {
+        LocalDateTime endSearching = LocalDateTime.now();
+        LocalDateTime startSearching = LocalDateTime.now().plusHours(1);
+        if (events != null) {
+            for (Event event : events) {
+                if (event.getEventDate().isAfter(endSearching)) {
+                    endSearching = event.getEventDate();
+                }
+            }
+            for (Event event : events) {
+                if (event.getEventDate().isBefore(endSearching)) {
+                    startSearching = event.getEventDate();
+                }
+            }
+        }
+
+        if (oldEvent != null) {
+            startSearching = LocalDateTime.now().minusDays(1);
+            endSearching = LocalDateTime.now().plusYears(100);
+            events = List.of(oldEvent);
+        }
+        List<String> uris = events
+                .stream()
+                .map(Event::getId)
+                .map(o -> {
+                    String str = "/events/" + o;
+                    return str;
+                })
+                .collect(Collectors.toList());
+
+        ResponseEntity<List<ViewStatsDto>> viewsFromStat = ewmClient.getStats(
+                uris,
+                String.valueOf(startSearching),
+                String.valueOf(endSearching),
+                true);
+
+        Map<Long, Long> viewsExtractor = new HashMap<>();
+
+        List<ViewStatsDto> views = viewsFromStat.getBody();
+
+        for (ViewStatsDto view : views) {
+            String uri = view.getUri();
+            String[] arrOfStr = uri.split("/", 3);
+            if (arrOfStr.length == 3) {
+                viewsExtractor.put(Long.valueOf(arrOfStr[2]), view.getHits());
+            }
+        }
+        return viewsExtractor;
     }
 
     public EventFullDto getEventById(Long eventId, HttpServletRequest request) {
+        if (!eventRepository.existsById(eventId)) {
+            throw new NotAvailableException("События не существует");
+        }
         HitDto hitDto = HitDto.builder()
                 .app(nameService)
                 .ip(request.getRequestURI())
@@ -162,19 +225,17 @@ public class PublicService {
         if (!event.getState().equals(State.PUBLISHED)) {
             throw new EntityNotFoundException("Cобытие ID = " + eventId + " не найдено.");
         }
-        String userUri = String.valueOf(request.getRequestURI());
-        event.setViews(createView(eventId, userUri));
-        eventRepository.save(event);
-        return EventMapper.getEventFullDto(event);
-    }
 
-    private Integer createView(Long eventId, String userIp) {
-        View view = View.builder()
-                .eventId(eventId)
-                .userIp(userIp)
-                .build();
-        viewRepository.save(view);
-        return viewRepository.countViewByEventIdAndUserIp(eventId, userIp);
+        Map<Long, Long> views = viewExtractor(null, event);
+
+        EventFullDto eventFullDto = EventMapper.getEventFullDto(event);
+
+        List<Long> newKeys = new ArrayList<>(views.keySet());
+        Long viewCount = newKeys.get(0);
+
+        eventFullDto.setViews(views.get(viewCount));
+
+        return eventFullDto;
     }
 
     public List<CategoryDto> getCategories(Integer from, Integer size) {

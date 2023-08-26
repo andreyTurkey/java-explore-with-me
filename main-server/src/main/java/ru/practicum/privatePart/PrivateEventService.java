@@ -68,7 +68,7 @@ public class PrivateEventService {
 
         newEventDto.setAvailable(true);
         newEventDto.setConfirmedRequests(0);
-        newEventDto.setView(0);
+
         User initiator = userRepository.getReferenceById(userId);
         Category category = categoryRepository.getReferenceById(newEventDto.getCategory());
 

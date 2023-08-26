@@ -8,7 +8,6 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 
-//@Embeddable
 @Entity
 @Table(name = "events", schema = "public")
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -72,9 +71,6 @@ public class Event {
     @Enumerated(EnumType.STRING)
     @Column(name = "state")
     State state;
-
-    @Column(name = "views", nullable = false)
-    Integer views;
 
     @Column(name = "participation_available")
     Boolean participationAvailable;

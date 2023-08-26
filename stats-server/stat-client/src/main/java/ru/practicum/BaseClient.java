@@ -1,5 +1,6 @@
 package ru.practicum;
 
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.lang.Nullable;
 import org.springframework.web.client.HttpStatusCodeException;
@@ -33,6 +34,10 @@ public class BaseClient {
 
     protected ResponseEntity<Object> getStat(String path, @Nullable Map<String, Object> parameters) {
         return makeAndSendRequest(HttpMethod.GET, path, null, parameters, null);
+    }
+
+    protected ResponseEntity<List<ViewStatsDto>> getStats(String path, @Nullable Map<String, Object> parameters) {
+        return customMakeAndSendRequest(HttpMethod.GET, path, null, parameters);
     }
 
     protected <T> ResponseEntity<Object> post(String path, T body) {
@@ -71,10 +76,6 @@ public class BaseClient {
         return makeAndSendRequest(HttpMethod.PATCH, path, userId, parameters, body);
     }
 
-    protected ResponseEntity<Object> customPatch(String path, Long userId, @Nullable Map<String, Object> parameters) {
-        return customMakeAndSendRequest(HttpMethod.PATCH, path, userId, parameters);
-    }
-
     protected ResponseEntity<Object> delete(String path) {
         return delete(path, null, null);
     }
@@ -103,20 +104,19 @@ public class BaseClient {
         return prepareGatewayResponse(shareitServerResponse);
     }
 
-    private ResponseEntity<Object> customMakeAndSendRequest(HttpMethod method, String path, Long userId, @Nullable Map<String, Object> parameters) {
+    private ResponseEntity<List<ViewStatsDto>> customMakeAndSendRequest(HttpMethod method, String path, Long userId, @Nullable Map<String, Object> parameters) {
         HttpEntity requestEntity = new HttpEntity<>(defaultHeaders(userId));
 
-        ResponseEntity<Object> shareitServerResponse;
-        try {
-            if (parameters != null) {
-                shareitServerResponse = rest.exchange(path, method, requestEntity, Object.class, parameters);
-            } else {
-                shareitServerResponse = rest.exchange(path, method, requestEntity, Object.class);
-            }
-        } catch (HttpStatusCodeException e) {
-            return ResponseEntity.status(e.getStatusCode()).body(e.getResponseBodyAsByteArray());
+        ParameterizedTypeReference<List<ViewStatsDto>> responseType = new ParameterizedTypeReference<>() {};
+
+        ResponseEntity<List<ViewStatsDto>> ewmServerResponse;
+
+        if (parameters != null) {
+            ewmServerResponse = rest.exchange(path, method, requestEntity, responseType, parameters);
+        } else {
+            ewmServerResponse = rest.exchange(path, method, requestEntity, responseType);
         }
-        return prepareGatewayResponse(shareitServerResponse);
+        return ewmServerResponse;
     }
 
     private HttpHeaders defaultHeaders(Long userId) {

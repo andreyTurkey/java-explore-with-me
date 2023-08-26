@@ -8,6 +8,7 @@ import ru.practicum.dto.EventFullDto;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.Positive;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 @Slf4j
@@ -29,7 +30,7 @@ public class PublicEventController {
                                                     @RequestParam(value = "sort", required = false) String sort,
                                                     @RequestParam(value = "from", defaultValue = "0") Integer from,
                                                     @RequestParam(value = "size", defaultValue = "10") Integer size,
-                                                    HttpServletRequest request) {
+                                                    HttpServletRequest request) throws UnsupportedEncodingException {
         log.debug("Запрос событий c параметрами: text {}, categories {}, paid {}, rangeStart {}, rangeEnd {}," +
                 " onlyAvailable {}, from {}, size {}", text, categories, paid, rangeStart, rangeEnd, onlyAvailable, from, size);
         return publicService.getEventsByParameters(
@@ -47,7 +48,7 @@ public class PublicEventController {
 
     @GetMapping(value = "{eventId}")
     public EventFullDto getEventById(@Positive @PathVariable("eventId") Long eventId,
-                                     HttpServletRequest request) {
+                                     HttpServletRequest request) throws UnsupportedEncodingException {
         log.debug("Запрос события c ID = {}", eventId);
         return publicService.getEventById(eventId, request);
     }

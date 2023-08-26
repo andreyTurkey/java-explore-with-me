@@ -49,6 +49,4 @@ public class NewEventDto {
     State state;
 
     Boolean available;
-
-    Integer view;
 }

@@ -1,5 +1,6 @@
 package ru.practicum;
 
+import io.micrometer.core.lang.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -30,20 +31,26 @@ public class EwmClient extends BaseClient {
         return post("/hit", hitDto);
     }
 
-    public ResponseEntity<Object> getStats(List<String> uris, String start, String end, boolean unique) {
+    public ResponseEntity<List<ViewStatsDto>> getStats(List<String> uris, String start, String end, @Nullable boolean unique) {
         Map<String, Object> parameters;
         if (uris == null) {
             parameters = Map.of(
-                    "start", encodeLocalDateTime(start),
-                    "end", encodeLocalDateTime(end),
+                    "start", start,
+                    "end", end,
                     "unique", unique);
-            return getStat("/stats?start={start}&end={end}&unique={unique}", parameters);
+            return getStats("/stats?start={start}&end={end}&unique={unique}", parameters);
         } else {
-            parameters = Map.of("start", encodeLocalDateTime(start),
-                    "end", encodeLocalDateTime(end),
+            String path = "/stats?start={start}&end={end}&unique={unique}&uris=";
+            for (String str : uris) {
+                path = path + str + "&";
+            }
+            parameters = Map.of(
+                    "start", start,
+                    "end", end,
                     "uris", uris,
                     "unique", unique);
-            return getStat("/stats?start={start}&end={end}&unique={unique}&uris={uris}", parameters);
+
+            return getStats(path, parameters);
         }
     }
 

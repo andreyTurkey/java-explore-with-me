@@ -8,6 +8,7 @@ import lombok.experimental.FieldDefaults;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 public class ViewStats {
 
     String app;

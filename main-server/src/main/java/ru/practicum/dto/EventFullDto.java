@@ -46,5 +46,5 @@ public class EventFullDto {
 
     State state;
 
-    Integer views;
+    Long views;
 }
