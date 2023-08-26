@@ -147,8 +147,6 @@ public class PublicService {
 
         List<EventFullDto> eventFullDtos = events.stream().map(EventMapper::getEventFullDto).collect(Collectors.toList());
 
-        List<Long> newKeys = new ArrayList<>(views.keySet()); // получили все ключи - eventId
-
         for (EventFullDto event : eventFullDtos) {
             if (views.containsKey(event.getId())) {
                 event.setViews(views.get(event.getId()));
