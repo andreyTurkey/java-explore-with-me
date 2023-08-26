@@ -170,7 +170,6 @@ public class PublicService {
                 }
             }
         }
-
         if (oldEvent != null) {
             startSearching = LocalDateTime.now().minusDays(1);
             endSearching = LocalDateTime.now().plusYears(100);
