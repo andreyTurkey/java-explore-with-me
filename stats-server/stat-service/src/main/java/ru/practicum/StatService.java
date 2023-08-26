@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import ru.practicum.exception.NotAvailableException;
 
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
@@ -48,6 +49,10 @@ public class StatService {
         } catch (DateTimeParseException ex) {
             startDecoded = LocalDateTime.parse(start, dateTimeFormatter);
             endDecoded = LocalDateTime.parse(end, dateTimeFormatter);
+        }
+
+        if (endDecoded.isBefore(LocalDateTime.now())) {
+            throw new NotAvailableException("Даты выборки указаны неверно.");
         }
 
         if (unique.equals("false") && uris != null) {
