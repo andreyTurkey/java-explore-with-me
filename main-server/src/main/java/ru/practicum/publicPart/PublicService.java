@@ -33,6 +33,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -83,18 +84,48 @@ public class PublicService {
         List<CompilationDto> compilationDtoList = new ArrayList<>();
 
         for (Compilation compilation : compilations) {
-            List<Long> eventsId = compilation.getEvents();
+            List<Long> eventsId = compilation.getEvents(); // берем из подбоки лист с ids events
             List<EventShortDto> eventsList = new ArrayList<>();
-            for (EventShortDto event : events) {
-                for (Long id : eventsId) {
-                    if (id.equals(event.getId())) {
-                        eventsList.add(event);
+            for (EventShortDto event : events) { // перебираем лист с событиями
+                for (Long id : eventsId) { // перебираем полученный лист с ids events
+                    if (id.equals(event.getId())) { // если id совпадает с событием
+                        eventsList.add(event); // событие добавляется в лист событий
                     }
                 }
             }
-            compilationDtoList.add(CompilationMapper.getCompilationDto(compilation, eventsList));
+            compilationDtoList.add(CompilationMapper.getCompilationDto(compilation, eventsList)); // в подборку добавляется лист с событиями
         }
-        return compilationDtoList;
+
+        Map<Long, EventShortDto> eventMap = events
+                .stream()
+                .collect(Collectors.toMap(EventShortDto::getId, Function.identity()));
+
+        Map<Compilation, List<Long>> compilationListMap = compilations.stream()
+                .collect(Collectors.toMap(Function.identity(), Compilation::getEvents));
+
+        List<CompilationDto> compilationDto = new ArrayList<>();
+
+        for (Map.Entry<Compilation, List<Long>> pair : compilationListMap.entrySet()) {
+            List<EventShortDto> newEvent =  pair.getValue()
+                    .stream()
+                    .map(o ->  {
+                        return eventMap.get(o);
+                    })
+                    .collect(Collectors.toList());
+           CompilationDto compilationDto1 = CompilationMapper.getCompilationDto(pair.getKey(), newEvent);
+           compilationDto.add(compilationDto1);
+        }
+
+        //return compilationDtoList;
+        return compilationDto;
+    }
+
+    public List<EventShortDto> getEvents (List<Long> eventsIds, Map<Long, EventShortDto> eventMap) { // удалить
+        return eventsIds.stream()
+                .map(o-> {
+                    return eventMap.get(o);
+                })
+                .collect(Collectors.toList());
     }
 
     public CompilationDto getCompilationById(Long compId) {
