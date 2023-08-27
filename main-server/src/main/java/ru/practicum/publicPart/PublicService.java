@@ -81,21 +81,6 @@ public class PublicService {
                 .map(EventMapper::getEventShortDto)
                 .collect(Collectors.toList());
 
-        List<CompilationDto> compilationDtoList = new ArrayList<>();
-
-        for (Compilation compilation : compilations) {
-            List<Long> eventsId = compilation.getEvents(); // берем из подбоки лист с ids events
-            List<EventShortDto> eventsList = new ArrayList<>();
-            for (EventShortDto event : events) { // перебираем лист с событиями
-                for (Long id : eventsId) { // перебираем полученный лист с ids events
-                    if (id.equals(event.getId())) { // если id совпадает с событием
-                        eventsList.add(event); // событие добавляется в лист событий
-                    }
-                }
-            }
-            compilationDtoList.add(CompilationMapper.getCompilationDto(compilation, eventsList)); // в подборку добавляется лист с событиями
-        }
-
         Map<Long, EventShortDto> eventMap = events
                 .stream()
                 .collect(Collectors.toMap(EventShortDto::getId, Function.identity()));
@@ -115,17 +100,7 @@ public class PublicService {
            CompilationDto compilationDto1 = CompilationMapper.getCompilationDto(pair.getKey(), newEvent);
            compilationDto.add(compilationDto1);
         }
-
-        //return compilationDtoList;
         return compilationDto;
-    }
-
-    public List<EventShortDto> getEvents (List<Long> eventsIds, Map<Long, EventShortDto> eventMap) { // удалить
-        return eventsIds.stream()
-                .map(o-> {
-                    return eventMap.get(o);
-                })
-                .collect(Collectors.toList());
     }
 
     public CompilationDto getCompilationById(Long compId) {
