@@ -61,7 +61,8 @@ public class Service {
     public List<CompilationDto> getCompilationByParameters(Boolean pinned,
                                                            Integer from,
                                                            Integer size) {
-        Pageable page = PageRequest.of(from > 0 ? from / size : 0, size);
+        Sort sortById = Sort.by(Sort.Direction.DESC, "id");
+        Pageable page = PageRequest.of(from > 0 ? from / size : 0, size, sortById);
 
         List<Compilation> compilations;
         List<Long> eventsIds = new ArrayList<>();
