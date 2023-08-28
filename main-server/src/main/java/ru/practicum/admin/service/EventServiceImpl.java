@@ -6,6 +6,7 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.dto.EventFullDto;
+import ru.practicum.dto.AdminParametersDto;
 import ru.practicum.exception.DuplicationException;
 import ru.practicum.exception.NotAvailableException;
 import ru.practicum.mapper.EventMapper;
@@ -35,23 +36,10 @@ public class EventServiceImpl implements EventService {
     static DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     @Override
-    public List<EventFullDto> getEventsByParameter(
-            List<Long> users,
-            List<State> states,
-            List<Integer> categories,
-            String rangeStart,
-            String rangeEnd,
-            Integer from,
-            Integer size) {
+    public List<EventFullDto> getEventsByParameter(AdminParametersDto adminParametersDto) {
 
         return eventRepository.getAdminEventsByParameters(
-                        users,
-                        states,
-                        categories,
-                        rangeStart,
-                        rangeEnd,
-                        from,
-                        size)
+                        adminParametersDto)
                 .stream()
                 .map(EventMapper::getEventFullDto)
                 .collect(Collectors.toList());

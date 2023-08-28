@@ -5,10 +5,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.dto.EventFullDto;
+import ru.practicum.dto.PublicParametersDto;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.Positive;
-import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 @Slf4j
@@ -18,7 +18,7 @@ import java.util.List;
 @AllArgsConstructor
 public class PublicEventController {
 
-    private final PublicService publicService;
+    private final Service service;
 
     @GetMapping
     public List<EventFullDto> getEventsByParameters(@RequestParam(value = "text", required = false) String text,
@@ -30,26 +30,28 @@ public class PublicEventController {
                                                     @RequestParam(value = "sort", required = false) String sort,
                                                     @RequestParam(value = "from", defaultValue = "0") Integer from,
                                                     @RequestParam(value = "size", defaultValue = "10") Integer size,
-                                                    HttpServletRequest request) throws UnsupportedEncodingException {
+                                                    HttpServletRequest request) {
         log.debug("Запрос событий c параметрами: text {}, categories {}, paid {}, rangeStart {}, rangeEnd {}," +
                 " onlyAvailable {}, from {}, size {}", text, categories, paid, rangeStart, rangeEnd, onlyAvailable, from, size);
-        return publicService.getEventsByParameters(
-                text,
-                categories,
-                paid,
-                rangeStart,
-                rangeEnd,
-                onlyAvailable,
-                sort,
-                from,
-                size,
-                request);
+        PublicParametersDto publicParametersDto = PublicParametersDto.builder()
+                .categories(categories)
+                .text(text)
+                .paid(paid)
+                .rangeStart(rangeStart)
+                .rangeEnd(rangeEnd)
+                .onlyAvailable(onlyAvailable)
+                .sort(sort)
+                .from(from)
+                .size(size)
+                .request(request)
+                .build();
+        return service.getEventsByParameters(publicParametersDto);
     }
 
     @GetMapping(value = "{eventId}")
     public EventFullDto getEventById(@Positive @PathVariable("eventId") Long eventId,
-                                     HttpServletRequest request) throws UnsupportedEncodingException {
+                                     HttpServletRequest request) {
         log.debug("Запрос события c ID = {}", eventId);
-        return publicService.getEventById(eventId, request);
+        return service.getEventById(eventId, request);
     }
 }

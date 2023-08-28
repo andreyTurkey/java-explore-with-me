@@ -8,14 +8,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
 import ru.practicum.EwmClient;
 import ru.practicum.HitDto;
 import ru.practicum.ViewStatsDto;
-import ru.practicum.dto.CategoryDto;
-import ru.practicum.dto.CompilationDto;
-import ru.practicum.dto.EventFullDto;
-import ru.practicum.dto.EventShortDto;
+import ru.practicum.dto.*;
 import ru.practicum.exception.NotAvailableException;
 import ru.practicum.mapper.CategoryMapper;
 import ru.practicum.mapper.CompilationMapper;
@@ -32,15 +28,18 @@ import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Slf4j
-@Service
+@org.springframework.stereotype.Service
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class PublicService {
+public class Service {
 
     CompilationRepository compilationRepository;
 
@@ -91,14 +90,12 @@ public class PublicService {
         List<CompilationDto> compilationDto = new ArrayList<>();
 
         for (Map.Entry<Compilation, List<Long>> pair : compilationListMap.entrySet()) {
-            List<EventShortDto> newEvent =  pair.getValue()
+            List<EventShortDto> newEvent = pair.getValue()
                     .stream()
-                    .map(o ->  {
-                        return eventMap.get(o);
-                    })
+                    .map(eventMap::get)
                     .collect(Collectors.toList());
-           CompilationDto compilationDto1 = CompilationMapper.getCompilationDto(pair.getKey(), newEvent);
-           compilationDto.add(compilationDto1);
+            CompilationDto compilationDto1 = CompilationMapper.getCompilationDto(pair.getKey(), newEvent);
+            compilationDto.add(compilationDto1);
         }
         return compilationDto;
     }
@@ -112,44 +109,39 @@ public class PublicService {
         return CompilationMapper.getCompilationDto(compilationRepository.getReferenceById(compId), eventShortDtos);
     }
 
-    public List<EventFullDto> getEventsByParameters(String text,
-                                                    Collection<Integer> categories,
-                                                    Boolean paid,
-                                                    String rangeStart,
-                                                    String rangeEnd,
-                                                    Boolean onlyAvailable,
-                                                    String sort,
-                                                    Integer from,
-                                                    Integer size,
-                                                    HttpServletRequest request) {
+    public List<EventFullDto> getEventsByParameters(PublicParametersDto publicParametersDto) {
         HitDto hitDto = HitDto.builder()
                 .app(nameService)
-                .ip(request.getRequestURI())
+                .ip(publicParametersDto.getRequest().getRequestURI())
                 .uri(uriPrefix)
                 .timestamp(LocalDateTime.now())
                 .build();
 
         ewmClient.addHit(hitDto);
 
-        if (rangeEnd != null) {
-            if (LocalDateTime.parse(rangeEnd, dateTimeFormatter).isBefore(LocalDateTime.now().plusHours(2))) {
+        if (publicParametersDto.getRangeEnd() != null) {
+            if (LocalDateTime.parse(publicParametersDto.getRangeEnd(), dateTimeFormatter).isBefore(LocalDateTime.now().plusHours(2))) {
                 throw new NotAvailableException("Даты и время указаны неверно");
             }
         }
 
-        List<Event> events = searchingEventsByParameters.getAllEventsByParameters(text,
-                        categories,
-                        paid,
-                        rangeStart,
-                        rangeEnd,
-                        onlyAvailable,
-                        sort,
-                        from,
-                        size)
-                .stream()
-                .collect(Collectors.toList());
+        List<Event> events = new ArrayList<>(searchingEventsByParameters.getAllEventsByParameters(publicParametersDto));
 
-        Map<Long, Long> views = viewExtractor(events, null);
+        LocalDateTime endSearching = LocalDateTime.now();
+        LocalDateTime startSearching = LocalDateTime.now().plusHours(1);
+
+        for (Event event : events) {
+            if (event.getEventDate().isAfter(endSearching)) {
+                endSearching = event.getEventDate();
+            }
+        }
+        for (Event event : events) {
+            if (event.getEventDate().isBefore(endSearching)) {
+                startSearching = event.getEventDate();
+            }
+        }
+
+        Map<Long, Long> views = viewExtractor(endSearching, startSearching, events);
 
         List<EventFullDto> eventFullDtos = events.stream().map(EventMapper::getEventFullDto).collect(Collectors.toList());
 
@@ -161,26 +153,9 @@ public class PublicService {
         return eventFullDtos;
     }
 
-    private Map<Long, Long> viewExtractor(List<Event> events, Event oldEvent) {
-        LocalDateTime endSearching = LocalDateTime.now();
-        LocalDateTime startSearching = LocalDateTime.now().plusHours(1);
-        if (events != null) {
-            for (Event event : events) {
-                if (event.getEventDate().isAfter(endSearching)) {
-                    endSearching = event.getEventDate();
-                }
-            }
-            for (Event event : events) {
-                if (event.getEventDate().isBefore(endSearching)) {
-                    startSearching = event.getEventDate();
-                }
-            }
-        }
-        if (oldEvent != null) {
-            startSearching = LocalDateTime.now().minusDays(1);
-            endSearching = LocalDateTime.now().plusYears(100);
-            events = List.of(oldEvent);
-        }
+    private Map<Long, Long> viewExtractor(LocalDateTime endSearching,
+                                          LocalDateTime startSearching,
+                                          List<Event> events) {
         List<String> uris = events
                 .stream()
                 .map(Event::getId)
@@ -229,7 +204,11 @@ public class PublicService {
             throw new EntityNotFoundException("Cобытие ID = " + eventId + " не найдено.");
         }
 
-        Map<Long, Long> views = viewExtractor(null, event);
+        LocalDateTime startSearching = LocalDateTime.now().minusDays(1);
+        LocalDateTime endSearching = LocalDateTime.now().plusYears(100);
+        List<Event> events = List.of(event);
+
+        Map<Long, Long> views = viewExtractor(endSearching, startSearching, events);
 
         EventFullDto eventFullDto = EventMapper.getEventFullDto(event);
 

@@ -32,7 +32,7 @@ import java.util.stream.Collectors;
 @Service
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class PrivateEventService {
+public class EventService {
 
     EventRepository eventRepository;
 

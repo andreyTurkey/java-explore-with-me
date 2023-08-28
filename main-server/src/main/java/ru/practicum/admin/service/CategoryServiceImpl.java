@@ -15,7 +15,6 @@ import ru.practicum.repository.EventRepository;
 
 import javax.persistence.EntityNotFoundException;
 
-@Transactional(readOnly = true)
 @Service
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)

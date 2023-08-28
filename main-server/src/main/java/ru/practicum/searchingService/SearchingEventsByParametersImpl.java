@@ -2,6 +2,8 @@ package ru.practicum.searchingService;
 
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
+import ru.practicum.dto.AdminParametersDto;
+import ru.practicum.dto.PublicParametersDto;
 import ru.practicum.model.Event;
 import ru.practicum.model.State;
 
@@ -11,7 +13,6 @@ import javax.persistence.criteria.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 @Service
@@ -24,13 +25,7 @@ public class SearchingEventsByParametersImpl implements SearchingEventsByParamet
     static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     @Override
-    public List<Event> getAdminEventsByParameters(Collection<Long> users,
-                                                  Collection<State> states,
-                                                  Collection<Integer> categories,
-                                                  String rangeStart,
-                                                  String rangeEnd,
-                                                  Integer from,
-                                                  Integer size) {
+    public List<Event> getAdminEventsByParameters(AdminParametersDto adminParametersDto) {
         final CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
         final CriteriaQuery<Event> criteriaQuery = criteriaBuilder.createQuery(Event.class);
         final Root<Event> event = criteriaQuery.from(Event.class);
@@ -40,43 +35,35 @@ public class SearchingEventsByParametersImpl implements SearchingEventsByParamet
 
         LocalDateTime end;
 
-        if (users != null) {
-            predicates.add(event.get("initiator").in(users));
+        if (adminParametersDto.getUsers() != null) {
+            predicates.add(event.get("initiator").in(adminParametersDto.getUsers()));
         }
-        if (states != null) {
-            predicates.add(event.get("state").in(states));
+        if (adminParametersDto.getStates() != null) {
+            predicates.add(event.get("state").in(adminParametersDto.getStates()));
         }
-        if (categories != null) {
-            predicates.add(event.get("category").in(categories));
+        if (adminParametersDto.getCategories() != null) {
+            predicates.add(event.get("category").in(adminParametersDto.getCategories()));
         }
-        if (rangeStart != null) {
-            start = LocalDateTime.parse(rangeStart, dateTimeFormatter);
+        if (adminParametersDto.getRangeStart() != null) {
+            start = LocalDateTime.parse(adminParametersDto.getRangeStart(), dateTimeFormatter);
             predicates.add(criteriaBuilder.greaterThan(event.get("eventDate"), start));
         }
-        if (rangeEnd != null) {
-            end = LocalDateTime.parse(rangeEnd, dateTimeFormatter);
+        if (adminParametersDto.getRangeEnd() != null) {
+            end = LocalDateTime.parse(adminParametersDto.getRangeEnd(), dateTimeFormatter);
             predicates.add(criteriaBuilder.lessThan(event.get("eventDate"), end));
         }
 
         criteriaQuery.where(predicates.toArray(new Predicate[0]));
 
         List<Event> events = em.createQuery(criteriaQuery)
-                .setFirstResult(from)
-                .setMaxResults(size)
+                .setFirstResult(adminParametersDto.getFrom())
+                .setMaxResults(adminParametersDto.getSize())
                 .getResultList();
         return events;
     }
 
     @Override
-    public List<Event> getAllEventsByParameters(String text,
-                                                Collection<Integer> categories,
-                                                Boolean paid,
-                                                String rangeStart,
-                                                String rangeEnd,
-                                                Boolean onlyAvailable,
-                                                String sort,
-                                                Integer from,
-                                                Integer size) {
+    public List<Event> getAllEventsByParameters(PublicParametersDto publicParametersDto) {
 
         final CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
         final CriteriaQuery<Event> criteriaQuery = criteriaBuilder.createQuery(Event.class);
@@ -86,24 +73,24 @@ public class SearchingEventsByParametersImpl implements SearchingEventsByParamet
         LocalDateTime start;
         LocalDateTime end;
 
-        if (text != null) {
-            predicates.add(criteriaBuilder.like((event.get("annotation")), "%" + text + "%"));
+        if (publicParametersDto.getText() != null) {
+            predicates.add(criteriaBuilder.like((event.get("annotation")), "%" + publicParametersDto.getText() + "%"));
         }
-        if (categories != null) {
-            predicates.add(event.get("category").in(categories));
+        if (publicParametersDto.getCategories() != null) {
+            predicates.add(event.get("category").in(publicParametersDto.getCategories()));
         }
-        if (paid != null) {
-            predicates.add(criteriaBuilder.equal(event.get("paid"), paid));
+        if (publicParametersDto.getPaid() != null) {
+            predicates.add(criteriaBuilder.equal(event.get("paid"), publicParametersDto.getPaid()));
         }
-        if (rangeStart != null) {
-            start = LocalDateTime.parse(rangeStart, dateTimeFormatter);
+        if (publicParametersDto.getRangeStart() != null) {
+            start = LocalDateTime.parse(publicParametersDto.getRangeStart(), dateTimeFormatter);
             predicates.add(criteriaBuilder.greaterThan(event.get("eventDate"), start));
         }
-        if (rangeEnd != null) {
-            end = LocalDateTime.parse(rangeEnd, dateTimeFormatter);
+        if (publicParametersDto.getRangeEnd() != null) {
+            end = LocalDateTime.parse(publicParametersDto.getRangeEnd(), dateTimeFormatter);
             predicates.add(criteriaBuilder.lessThan(event.get("eventDate"), end));
         }
-        if (onlyAvailable) {
+        if (publicParametersDto.getOnlyAvailable()) {
             Expression<Integer> confirmedRequests = event.get("confirmed_requests");
             Expression<Integer> limit = event.get("participantLimit");
             predicates.add(criteriaBuilder.notEqual(criteriaBuilder.diff(confirmedRequests, limit), 0));
@@ -114,8 +101,8 @@ public class SearchingEventsByParametersImpl implements SearchingEventsByParamet
         criteriaQuery.where(predicates.toArray(new Predicate[0]));
 
         List<Event> events = em.createQuery(criteriaQuery)
-                .setFirstResult(from)
-                .setMaxResults(size)
+                .setFirstResult(publicParametersDto.getFrom())
+                .setMaxResults(publicParametersDto.getSize())
                 .getResultList();
         return events;
     }

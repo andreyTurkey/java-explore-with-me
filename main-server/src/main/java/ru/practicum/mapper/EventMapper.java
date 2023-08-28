@@ -49,7 +49,6 @@ public class EventMapper {
                 .participantLimit(event.getParticipantLimit())
                 .state(event.getState())
                 .title(event.getTitle())
-                //.views(event.getViews())
                 .build();
         return eventFullDto;
     }

@@ -8,6 +8,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.admin.service.EventService;
 import ru.practicum.dto.EventFullDto;
+import ru.practicum.dto.AdminParametersDto;
 import ru.practicum.model.State;
 import ru.practicum.model.UpdateEventAdminRequest;
 
@@ -42,6 +43,15 @@ public class EventController {
                                                    @Min(1) @RequestParam(value = "size", defaultValue = "10") Integer size) {
         log.debug("Запрос событий по параметрам: пользователи {}, статусы {}, категории {}, старт {}, финиш {}, from {}, " +
                 "size {}", users, states, categories, rangeStart, rangeEnd, from, size);
-        return eventService.getEventsByParameter(users, states, categories, rangeStart, rangeEnd, from, size);
+        AdminParametersDto adminParametersDto = AdminParametersDto.builder()
+                .categories(categories)
+                .from(from)
+                .size(size)
+                .rangeEnd(rangeEnd)
+                .rangeStart(rangeStart)
+                .states(states)
+                .users(users)
+                .build();
+        return eventService.getEventsByParameter(adminParametersDto);
     }
 }
