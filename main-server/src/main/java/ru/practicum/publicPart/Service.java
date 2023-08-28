@@ -76,6 +76,8 @@ public class Service {
             eventsIds.addAll(comp.getEvents());
         }
 
+        log.debug("СОРТИРОВКА ЛИСТА = {}", compilations);
+
         List<EventShortDto> events = eventRepository.findAllByIdIn(eventsIds)
                 .stream()
                 .map(EventMapper::getEventShortDto)
@@ -98,7 +100,10 @@ public class Service {
             CompilationDto compilationDto1 = CompilationMapper.getCompilationDto(pair.getKey(), newEvent);
             compilationDto.add(compilationDto1);
         }
-        return compilationDto;
+        return compilationDto.stream().sorted((o1, o2) -> {
+                    return Math.toIntExact(o2.getId() - o1.getId());
+                }
+        ).collect(Collectors.toList());
     }
 
     public CompilationDto getCompilationById(Long compId) {
