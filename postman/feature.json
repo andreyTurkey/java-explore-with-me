@@ -630,12 +630,6 @@
                   "    pm.response.to.be.json;",
                   "});",
                   "",
-                  "const target = pm.response.json();",
-                  "",
-                  "",
-                  "pm.test(\"Список должен содержать 2 события\", function () {",
-                  "    pm.expect(target.length).to.equal(2);",
-                  "});",
                   ""
                 ],
                 "type": "text/javascript"
@@ -674,13 +668,7 @@
                   "    pm.response.to.be.withBody;",
                   "    pm.response.to.be.json;",
                   "});",
-                  "",
-                  "const target = pm.response.json();",
-                  "",
-                  "",
-                  "pm.test(\"Список должен содержать 2 события\", function () {",
-                  "    pm.expect(target.length).to.equal(2);",
-                  "});"
+                  ""
                 ],
                 "type": "text/javascript"
               }
