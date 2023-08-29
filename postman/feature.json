@@ -1,0 +1,832 @@
+{
+  "info": {
+    "_postman_id": "bb2a758d-e484-45ef-b45f-cdb6c26d5975",
+    "name": "Test Feature",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "27155305"
+  },
+  "item": [
+    {
+      "name": "User",
+      "item": [
+        {
+          "name": "Добавление нового пользователя",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"name\":\"Preston Mohr\",\n\"email\":\"Chanelle@hotmail.com\"}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/admin/users",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "admin",
+                "users"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Добавление нового пользователя",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"name\": \"Marco Carroll\",\n \"email\": \"Edd68@gmail.com\"}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/admin/users",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "admin",
+                "users"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Добавление нового пользователя",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"name\":\"Mrs. Alma Lesch\",\n\"email\":\"Anne_Kutch63@gmail.com\"}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/admin/users",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "admin",
+                "users"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Добавление нового пользователя",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"name\":\"Mrs. Dori Lasch\",\n\"email\":\"Anne98@gmail.com\"}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/admin/users",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "admin",
+                "users"
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              ""
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Ответ должен содержать код статуса 201 и данные в формате json\", function () {",
+              "    pm.response.to.have.status(201);",
+              "    pm.response.to.be.withBody;",
+              "    pm.response.to.be.json;",
+              "});",
+              "",
+              "const source = JSON.parse(pm.request.body.raw);",
+              "const target = pm.response.json();",
+              "",
+              "pm.test(\"Пользователь должен содержать поля: id, name, email, subscription\", function () {",
+              "pm.expect(target).to.have.property('id');",
+              "pm.expect(target).to.have.property('name');",
+              "pm.expect(target).to.have.property('email');",
+              "pm.expect(target).to.have.property('subscription');",
+              "});",
+              "",
+              "pm.test(\"Данные в ответе должны соответствовать данным в запросе\", function () {",
+              "    pm.expect(target.id).to.not.be.null;",
+              "    pm.expect(source.name).equal(target.name, 'Имя пользователя должно соответствовать отправленному в запросе');",
+              "    pm.expect(source.email).equal(target.email, 'Почта пользователя должна соответствовать отправленной в запросе');",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Category",
+      "item": [
+        {
+          "name": "Добавление новой категории",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Ответ должен содержать код статуса 201 и данные в формате json\", function () {",
+                  "    pm.response.to.have.status(201);",
+                  "    pm.response.to.be.withBody;",
+                  "    pm.response.to.be.json;",
+                  "});",
+                  "",
+                  "const source = JSON.parse(pm.request.body.raw);",
+                  "const target = pm.response.json();",
+                  "",
+                  "pm.test(\"Категория должна содержать поля: id, name\", function () {",
+                  "pm.expect(target).to.have.property('id');",
+                  "pm.expect(target).to.have.property('name');",
+                  "});",
+                  "",
+                  "pm.test(\"Данные в ответе должны соответствовать данным в запросе\", function () {",
+                  "    pm.expect(target.id).to.not.be.null;",
+                  "    pm.expect(source.name).equal(target.name, 'Название категории должно совпадать с отправленным');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{ \n\t\"name\": \"green2111\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/admin/categories",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "admin",
+                "categories"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Event",
+      "item": [
+        {
+          "name": "Добавление нового события",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"annotation\":\"Perferendis qui ipsam velit rerum quia in quam et tempore. Perferendis ullam perferendis architecto qui sint quo nostrum. Aliquam dolores error ullam quo vero minima vero beatae architecto. Id quos quas. Dicta ut id odit perferendis itaque repudiandae nisi nihil. Tempore quidem quia maxime architecto non dolorum.\",\"category\":1,\"description\":\"Consequatur excepturi dolores sed quae totam. Corporis culpa est. Ea expedita nemo magni nostrum ut molestiae ut laudantium.\\n \\rOfficiis nemo est illo. Fuga debitis qui impedit ea perferendis nihil nemo in. Quos ex aut commodi. Totam perspiciatis saepe fuga enim ut voluptatem ullam. Mollitia eveniet aliquam. Sit possimus quaerat corporis qui eos illum.\\n \\rQui sit voluptas. Architecto officiis sint. Similique aliquam autem tempora maxime ullam facere. Et fugit vitae ut earum repudiandae explicabo pariatur officiis labore. Voluptatum perferendis esse saepe unde.\",\"eventDate\":\"2023-08-30 20:10:56\",\"location\":{\"lat\":-13.5063,\"lon\":-65.1691},\"paid\":\"true\",\"participantLimit\":\"888\",\"requestModeration\":false,\"title\":\"Laboriosam adipisci atque.\"}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/users/:userId/events",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "users",
+                ":userId",
+                "events"
+              ],
+              "variable": [
+                {
+                  "key": "userId",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Добавление нового события",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"annotation\":\"Eos officia dolorem mollitia sed explicabo rerum. Sit est voluptatem et tempore nobis doloribus voluptatem quis alias. Omnis veritatis necessitatibus. Voluptatem consectetur quas illo ipsa dolor aliquid laboriosam vero. Ut laudantium sed sit ipsam est dolores possimus.\",\"category\":1,\"description\":\"Doloribus saepe modi at totam debitis pariatur vel. Deserunt amet rem molestiae dolorem in id et ullam et. Et dolorem velit inventore.\\n \\rEum molestiae nihil quod est totam a. Assumenda in quibusdam in quia itaque. Quia ut qui. Sunt explicabo quod tenetur. Dignissimos repellendus et cumque hic debitis rem nisi quos. Veritatis nesciunt odit laudantium cum delectus ratione necessitatibus facilis numquam.\\n \\rMollitia consequatur voluptatem. Numquam est harum assumenda molestiae labore doloremque. Ut voluptatibus libero. Repellat accusantium hic expedita voluptas est animi sint doloribus et. Repellendus voluptas eum aperiam eligendi ratione optio. Quia quos et sed minima dolores fuga perferendis voluptatibus voluptatem.\",\"eventDate\":\"2023-08-30 20:57:43\",\"location\":{\"lat\":75.4204,\"lon\":-168.1818},\"paid\":\"true\",\"participantLimit\":\"434\",\"requestModeration\":false,\"title\":\"Qui illum est tempore facilis dolor.\"}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/users/:userId/events",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "users",
+                ":userId",
+                "events"
+              ],
+              "variable": [
+                {
+                  "key": "userId",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Добавление нового события",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"annotation\":\"Nisi beatae eius doloribus quidem qui ipsum minus accusantium. Ipsum commodi iste saepe qui. In rerum aut facere praesentium et. Ut et dolor maiores voluptate. Quo aut reprehenderit amet autem. Aperiam libero sed aut odio.\",\"category\":1,\"description\":\"Mollitia illo accusamus ipsum. Accusamus molestiae laborum perspiciatis laudantium doloribus qui et impedit fugiat. Eaque cupiditate voluptatem. Qui rem ad.\\n \\rBlanditiis est autem voluptate soluta nisi. Ut corporis vel fuga ad voluptatem eos. Facilis totam tempore minima eum debitis qui at. Quis ut odio. Natus repellat et voluptate in molestias blanditiis ab maxime.\\n \\rUt consequatur molestiae et molestiae ratione saepe. Eos corrupti aut officiis porro. Iste ea soluta doloribus.\",\"eventDate\":\"2023-08-30 20:59:37\",\"location\":{\"lat\":-39.2512,\"lon\":96.9431},\"paid\":\"true\",\"participantLimit\":\"179\",\"requestModeration\":false,\"title\":\"Facilis ducimus assumenda est eligendi aut omnis excepturi ratione.\"}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/users/:userId/events",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "users",
+                ":userId",
+                "events"
+              ],
+              "variable": [
+                {
+                  "key": "userId",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Добавление нового события",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"annotation\":\"A vel exercitationem exercitationem nihil reprehenderit cupiditate recusandae tempora voluptatibus. Fugiat omnis totam exercitationem voluptatem esse maiores consequatur. Odio fugit fugit esse ipsa iste numquam aperiam dolore rerum. Dicta soluta earum in dicta ut autem sint suscipit. Praesentium et itaque eius eveniet exercitationem qui ullam cumque.\",\"category\":1,\"description\":\"Ut magnam quis accusantium enim voluptates. Delectus earum tenetur eos. Error sit totam nemo commodi ut eum id blanditiis. Et et labore eum nam quod vitae. Asperiores quod aut itaque eos et veritatis animi vitae.\\n \\rAt ullam voluptas optio et asperiores iusto est placeat eius. Sed omnis at adipisci numquam doloremque porro. Quaerat aspernatur qui animi iure rerum.\\n \\rModi pariatur iusto sit sunt id et veritatis. Explicabo et quidem optio nihil laboriosam fuga accusamus. Qui saepe fugiat. Voluptatum quaerat atque. Illo pariatur qui.\",\"eventDate\":\"2023-08-30 21:04:49\",\"location\":{\"lat\":-27.3523,\"lon\":-79.648},\"paid\":\"false\",\"participantLimit\":\"606\",\"requestModeration\":false,\"title\":\"In tempore est.\"}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/users/:userId/events",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "users",
+                ":userId",
+                "events"
+              ],
+              "variable": [
+                {
+                  "key": "userId",
+                  "value": "2"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              ""
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Ответ должен содержать код статуса 201 и данные в формате json\", function () {",
+              "    pm.response.to.have.status(201);  ",
+              "    pm.response.to.be.withBody;",
+              "    pm.response.to.be.json;",
+              "});",
+              "",
+              "const source = JSON.parse(pm.request.body.raw);",
+              "const target = pm.response.json();",
+              "",
+              "pm.test(\"Событие должно содержать поля: id, title, annotation, category, paid, eventDate, initiator, description, participantLimit, state, createdOn, location, requestModeration\", function () {",
+              "pm.expect(target).to.have.property('id');",
+              "pm.expect(target).to.have.property('title');",
+              "pm.expect(target).to.have.property('annotation');",
+              "pm.expect(target).to.have.property('category');",
+              "pm.expect(target).to.have.property('paid');",
+              "pm.expect(target).to.have.property('eventDate');",
+              "pm.expect(target).to.have.property('initiator');",
+              "pm.expect(target).to.have.property('description');",
+              "pm.expect(target).to.have.property('participantLimit');",
+              "pm.expect(target).to.have.property('state');",
+              "pm.expect(target).to.have.property('createdOn');",
+              "pm.expect(target).to.have.property('location');",
+              "pm.expect(target).to.have.property('requestModeration');",
+              "});",
+              "",
+              "pm.test(\"Данные в ответе должны соответствовать данным в запросе\", function () {",
+              "    pm.expect(target.id).to.not.be.null;",
+              "    pm.expect(target.title).equal(source.title, 'Название события должно соответствовать названию события в запросе');",
+              "    pm.expect(target.annotation).equal(source.annotation, 'Аннотация события должна соответствовать аннотации события в запросе');",
+              "    pm.expect(target.paid.toString()).equal(source.paid.toString(), 'Стоимость события должна соответствовать стоимости события в запросе');",
+              "    pm.expect(target.eventDate).equal(source.eventDate, 'Дата проведения события должна соответствовать дате проведения события в запросе');",
+              "    pm.expect(target.description).equal(source.description, 'Описание события должно соответствовать описание события в запросе');",
+              "    pm.expect(target.participantLimit.toString()).equal(source.participantLimit.toString(), 'Лимит участников события должно соответствовать лимиту участников события в запросе');",
+              "    pm.expect(target.location.lat.toString()).equal(source.location.lat.toString(), 'Широта локации проведения события должна соответствовать широте локации проведения события в запросе');",
+              "    pm.expect(target.location.lon.toString()).equal(source.location.lon.toString(), 'Долгота локации проведения события должна соответствовать долготе локации проведения события в запросе');",
+              "    pm.expect(target.requestModeration.toString()).equal(source.requestModeration.toString(), 'Необходимость модерации события должна соответствовать необходимости модерации события в запросе');",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Event Status Published",
+      "item": [
+        {
+          "name": "Изменение статуса мероприятия на Published",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "",
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"stateAction\":\"PUBLISH_EVENT\"}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/admin/events/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "admin",
+                "events",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Изменение статуса мероприятия на Published",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"stateAction\":\"PUBLISH_EVENT\"}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/admin/events/2",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "admin",
+                "events",
+                "2"
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              ""
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Ответ должен содержать код статуса 200 и данные в формате json\", function () {",
+              "    pm.response.to.be.ok;    ",
+              "    pm.response.to.be.withBody;",
+              "    pm.response.to.be.json;",
+              "});",
+              "",
+              "const source = pm.collectionVariables.get('response');",
+              "const target = pm.response.json();",
+              "",
+              "pm.test(\"Событие должно содержать поля: id, title, annotation, category, paid, eventDate, initiator, description, participantLimit, state, createdOn, publishedOn, location, requestModeration\", function () {",
+              "pm.expect(target).to.have.property('id');",
+              "pm.expect(target).to.have.property('title');",
+              "pm.expect(target).to.have.property('annotation');",
+              "pm.expect(target).to.have.property('category');",
+              "pm.expect(target).to.have.property('paid');",
+              "pm.expect(target).to.have.property('eventDate');",
+              "pm.expect(target).to.have.property('initiator');",
+              "pm.expect(target).to.have.property('description');",
+              "pm.expect(target).to.have.property('participantLimit');",
+              "pm.expect(target).to.have.property('state');",
+              "pm.expect(target).to.have.property('createdOn');",
+              "pm.expect(target).to.have.property('publishedOn');",
+              "pm.expect(target).to.have.property('location');",
+              "pm.expect(target).to.have.property('requestModeration');",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Subscription",
+      "item": [
+        {
+          "name": "Добавление новой подписки",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/subscription/:subscriberId/user/:initiatorId",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "subscription",
+                ":subscriberId",
+                "user",
+                ":initiatorId"
+              ],
+              "variable": [
+                {
+                  "key": "subscriberId",
+                  "value": "3"
+                },
+                {
+                  "key": "initiatorId",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Добавление новой подписки",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/subscription/:subscriberId/user/:initiatorId",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "subscription",
+                ":subscriberId",
+                "user",
+                ":initiatorId"
+              ],
+              "variable": [
+                {
+                  "key": "subscriberId",
+                  "value": "4"
+                },
+                {
+                  "key": "initiatorId",
+                  "value": "2"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Добавление новой подписки",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/subscription/:subscriberId/user/:initiatorId",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "subscription",
+                ":subscriberId",
+                "user",
+                ":initiatorId"
+              ],
+              "variable": [
+                {
+                  "key": "subscriberId",
+                  "value": "3"
+                },
+                {
+                  "key": "initiatorId",
+                  "value": "2"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              ""
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Ответ должен содержать код статуса 201 и данные в формате json\", function () {",
+              "    pm.response.to.have.status(201);   ",
+              "    pm.response.to.be.withBody;",
+              "    pm.response.to.be.json;",
+              "});",
+              "",
+              "const target = pm.response.json();",
+              "var query = {};",
+              "pm.request.url.query.all().forEach((param) => { query[param.key] = param.value});",
+              "",
+              "pm.test(\"Запрос на участие должен содержать поля: id, subscriber, initiator\", function () {",
+              "pm.expect(target).to.have.property('id');",
+              "pm.expect(target).to.have.property('subscriber');",
+              "pm.expect(target).to.have.property('initiator');",
+              "});",
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Get Events",
+      "item": [
+        {
+          "name": "Получение актуальных опубликованных событий стартера",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Ответ должен содержать код статуса 200 и данные в формате json\", function () {",
+                  "    pm.response.to.be.ok;    ",
+                  "    pm.response.to.be.withBody;",
+                  "    pm.response.to.be.json;",
+                  "});",
+                  "",
+                  "const target = pm.response.json();",
+                  "",
+                  "",
+                  "pm.test(\"Список должен содержать 2 события\", function () {",
+                  "    pm.expect(target.length).to.equal(2);",
+                  "});",
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/subscription/3/events/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "subscription",
+                "3",
+                "events",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Получение всех подписок",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Ответ должен содержать код статуса 200 и данные в формате json\", function () {",
+                  "    pm.response.to.be.ok;    ",
+                  "    pm.response.to.be.withBody;",
+                  "    pm.response.to.be.json;",
+                  "});",
+                  "",
+                  "const target = pm.response.json();",
+                  "",
+                  "",
+                  "pm.test(\"Список должен содержать 2 события\", function () {",
+                  "    pm.expect(target.length).to.equal(2);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/subscription/3/events",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "subscription",
+                "3",
+                "events"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
