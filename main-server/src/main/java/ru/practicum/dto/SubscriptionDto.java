@@ -3,20 +3,18 @@ package ru.practicum.dto;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+@FieldDefaults(level = AccessLevel.PRIVATE)
 @Getter
 @Setter
-@FieldDefaults(level = AccessLevel.PRIVATE)
-@AllArgsConstructor
 @Builder
+@AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class UserDto {
+public class SubscriptionDto {
 
     Long id;
 
-    String name;
+    Long subscriber;
 
-    String email;
-
-    Boolean subscription;
+    Long initiator;
 }

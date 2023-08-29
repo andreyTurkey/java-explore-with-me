@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.dto.UpdateUserDto;
 import ru.practicum.dto.UserDto;
 import ru.practicum.exception.DuplicationException;
 import ru.practicum.mapper.UserMapper;
@@ -33,8 +34,27 @@ public class UserServiceImpl implements UserService {
         if (userRepository.existsByName(newUserRequest.getName())) {
             throw new DuplicationException("Имя уже существует.");
         }
+        if(newUserRequest.getSubscription() == null) {
+            newUserRequest.setSubscription(true);
+        }
         userRepository.save(UserMapper.getUser(newUserRequest));
         return UserMapper.getUserDto(userRepository.findByEmail(newUserRequest.getEmail()));
+    }
+
+    @Override
+    @Transactional
+    public UserDto changeUser(UpdateUserDto updateUserDto, Long userId) {
+        User user = userRepository.getReferenceById(userId);
+        if (updateUserDto.getSubscription() != null) {
+            user.setSubscription(updateUserDto.getSubscription());
+        }
+        if (updateUserDto.getEmail() != null) {
+            user.setEmail(updateUserDto.getEmail());
+        }
+        if (updateUserDto.getName() != null) {
+            user.setName(updateUserDto.getName());
+        }
+        return UserMapper.getUserDto(user);
     }
 
     @Override

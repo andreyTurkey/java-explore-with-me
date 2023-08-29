@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.admin.service.UserService;
+import ru.practicum.dto.UpdateUserDto;
 import ru.practicum.dto.UserDto;
 import ru.practicum.model.NewUserRequest;
 import ru.practicum.model.User;
@@ -44,5 +45,12 @@ public class UserController {
         log.debug("Запрошено удаление пользователя с ID = {}", userId);
         userService.deleteUser(userId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @PatchMapping(value = "{userId}")
+    public ResponseEntity<UserDto> changeUser(@Valid @RequestBody UpdateUserDto body,
+                                                    @PathVariable(value = "userId") Long userId) {
+        log.debug("Запрошены изменения пользователя ID = {}", userId);
+        return new ResponseEntity<>(userService.changeUser(body, userId), HttpStatus.CREATED);
     }
 }

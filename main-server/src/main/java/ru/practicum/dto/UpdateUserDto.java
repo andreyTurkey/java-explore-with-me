@@ -10,7 +10,7 @@ import lombok.experimental.FieldDefaults;
 @Builder
 @NoArgsConstructor
 @ToString
-public class UserDto {
+public class UpdateUserDto {
 
     Long id;
 

@@ -25,4 +25,6 @@ public class NewUserRequest {
     @NotNull
     @Size(min = 6, max = 254, message = "Проверьте длину строки")
     String email;
+
+    Boolean subscription;
 }
