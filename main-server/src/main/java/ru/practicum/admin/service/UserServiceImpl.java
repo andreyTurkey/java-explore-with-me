@@ -34,6 +34,7 @@ public class UserServiceImpl implements UserService {
         if (userRepository.existsByName(newUserRequest.getName())) {
             throw new DuplicationException("Имя уже существует.");
         }
+        
         if (newUserRequest.getSubscription() == null) {
             newUserRequest.setSubscription(true);
         }
