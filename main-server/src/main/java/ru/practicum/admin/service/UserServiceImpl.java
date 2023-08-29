@@ -25,7 +25,6 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserServiceImpl implements UserService {
-
     UserRepository userRepository;
 
     @Override
@@ -34,7 +33,6 @@ public class UserServiceImpl implements UserService {
         if (userRepository.existsByName(newUserRequest.getName())) {
             throw new DuplicationException("Имя уже существует.");
         }
-        
         if (newUserRequest.getSubscription() == null) {
             newUserRequest.setSubscription(true);
         }
