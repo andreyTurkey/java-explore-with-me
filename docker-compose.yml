@@ -6,15 +6,16 @@ services:
     container_name: stats-server
     ports:
       - "9090:9090"
+      - "9091:9091"
     depends_on:
       - stats-db
     environment:
-      - URL=jdbc:postgresql://ewm-stats-db:5432/ewm
-      - POSTGRES_USER=andr
-      - POSTGRES_PASSWORD=root
+      - Stat_URL=jdbc:postgresql://ewm-stats-db:5432/ewm
+      - Stat_USER=andr
+      - Stat_PASSWORD=root
 
   stats-db:
-    image: postgres:14-alpine
+    image: postgres:14-alpine-stat
     build:
       context: ./
       dockerfile: ./Dockerfile.postgres
@@ -25,3 +26,32 @@ services:
       - POSTGRES_DB=ewm
       - POSTGRES_USER=andr
       - POSTGRES_PASSWORD=root
+
+  main_svc:
+    build: ./main-server
+    image: main-svc-image
+    container_name: main-server
+    ports:
+      - "8080:8080"
+      - "8081:8081"
+    depends_on:
+      - main-db
+    environment:
+      - Main_URL=jdbc:postgresql://ewm-main-db:5432/ewm_main
+      - Main_USER=postgres
+      - Main_PASSWORD=root
+      - STATS_URL=http://stats-server:9090
+
+  main-db:
+    image: postgres:14-alpine-main
+    build:
+      context: ./
+      dockerfile: ./Dockerfile.main
+    container_name: ewm-main-db
+    ports:
+      - "6542:5432"
+    environment:
+      - POSTGRES_DB=ewm_main
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=root
+

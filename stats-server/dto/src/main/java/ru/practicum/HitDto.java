@@ -9,8 +9,10 @@ import java.time.LocalDateTime;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Getter
 @Setter
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode
+@ToString
 public class HitDto {
 
     String app;
