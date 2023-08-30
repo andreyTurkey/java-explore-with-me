@@ -12,7 +12,7 @@ public class UserMapper {
                 .id(user.getId())
                 .name(user.getName())
                 .email(user.getEmail())
-                .subscription(user.getSubscription())
+                .subscriptionAvailability(user.getSubscriptionAvailability())
                 .build();
         return userDto;
     }
@@ -21,7 +21,7 @@ public class UserMapper {
         User user = User.builder()
                 .name(newUserRequest.getName())
                 .email(newUserRequest.getEmail())
-                .subscription(newUserRequest.getSubscription())
+                .subscriptionAvailability(newUserRequest.getSubscription())
                 .build();
         return user;
     }

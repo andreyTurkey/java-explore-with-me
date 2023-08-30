@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.dto.EventShortDto;
+import ru.practicum.dto.UserDto;
 import ru.practicum.privatePart.SubscriptionService;
 
 import java.util.List;
@@ -27,21 +28,43 @@ public class SubscriptionController {
         return new ResponseEntity<>(subscriptionService.addSubscription(subscriberId, initiatorId), HttpStatus.CREATED);
     }
 
-    @GetMapping(value = "/{subscriberId}/events/{initiatorId}")
-    public List<EventShortDto> getEvents(@PathVariable("subscriberId") Long subscriberId,
-                                         @PathVariable("initiatorId") Long initiatorId,
+    @GetMapping(value = "/events/{initiatorId}")
+    public List<EventShortDto> getEvents(@PathVariable("initiatorId") Long initiatorId,
                                          @RequestParam(value = "from", defaultValue = "0") Integer from,
                                          @RequestParam(value = "size", defaultValue = "10") Integer size) {
         log.debug("Запрос на получение актуальных событий пользователя {}", initiatorId);
-        return subscriptionService.getEventsByInitiatorId(subscriberId, initiatorId, from, size);
+        return subscriptionService.getEventsByInitiatorId(initiatorId, from, size);
+    }
+
+    @GetMapping(value = "/{subscriberId}")
+    public List<UserDto> getStartersBySubscriber(@PathVariable("subscriberId") Long subscriberId,
+                                                 @RequestParam(value = "from", defaultValue = "0") Integer from,
+                                                 @RequestParam(value = "size", defaultValue = "10") Integer size) {
+        log.debug("Запрос на получение всех пользователей, на которых подписан пользователь  {}", subscriberId);
+        return subscriptionService.getStartersBySubscriber(subscriberId, from, size);
+    }
+
+    @GetMapping(value = "/starter/{initiatorId}")
+    public List<UserDto> getSubscribersByStarter(@PathVariable("initiatorId") Long initiatorId,
+                                                 @RequestParam(value = "from", defaultValue = "0") Integer from,
+                                                 @RequestParam(value = "size", defaultValue = "10") Integer size) {
+        log.debug("Запрос на получение всех подписчиков, которые подписаны на пользователя  {}", initiatorId);
+        return subscriptionService.getSubscribersByStarter(initiatorId, from, size);
     }
 
     @GetMapping(value = "/{subscriberId}/events")
     public List<EventShortDto> getAllSubscriptionEvents(@PathVariable("subscriberId") Long subscriberId,
-                                         @RequestParam(value = "from", defaultValue = "0") Integer from,
-                                         @RequestParam(value = "size", defaultValue = "10") Integer size) {
+                                                        @RequestParam(value = "from", defaultValue = "0") Integer from,
+                                                        @RequestParam(value = "size", defaultValue = "10") Integer size) {
         log.debug("Запрос на получение актуальных событий от пользователя {}", subscriberId);
         return subscriptionService.getAllSubscriptionEvents(subscriberId, from, size);
+    }
+
+    @DeleteMapping(value = "/{subscriberId}/events/{initiatorId}")
+    public void deleteSubscription(@PathVariable("subscriberId") Long subscriberId,
+                                   @PathVariable("initiatorId") Long initiatorId) {
+        log.debug("Запрос на удаление пользователем {} на пользователя  {}", subscriberId, initiatorId);
+        subscriptionService.deleteSubscription(subscriberId, initiatorId);
     }
 }
 

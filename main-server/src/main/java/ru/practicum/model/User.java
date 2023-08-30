@@ -27,6 +27,6 @@ public class User {
     @Column(name = "email", nullable = false)
     String email;
 
-    @Column(name = "subscription")
-    Boolean subscription;
+    @Column(name = "subscription_availability")
+    Boolean subscriptionAvailability;
 }

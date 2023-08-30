@@ -14,6 +14,7 @@ import ru.practicum.exception.DuplicationException;
 import ru.practicum.mapper.UserMapper;
 import ru.practicum.model.NewUserRequest;
 import ru.practicum.model.User;
+import ru.practicum.repository.SubscriptionRepository;
 import ru.practicum.repository.UserRepository;
 
 import javax.persistence.EntityNotFoundException;
@@ -25,7 +26,10 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserServiceImpl implements UserService {
+
     UserRepository userRepository;
+
+    SubscriptionRepository subscriptionRepository;
 
     @Override
     @Transactional
@@ -44,8 +48,11 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public UserDto changeUser(UpdateUserDto updateUserDto, Long userId) {
         User user = userRepository.getReferenceById(userId);
-        if (updateUserDto.getSubscription() != null) {
-            user.setSubscription(updateUserDto.getSubscription());
+        if (updateUserDto.getSubscriptionAvailability() != null) {
+            user.setSubscriptionAvailability(updateUserDto.getSubscriptionAvailability());
+            if (updateUserDto.getSubscriptionAvailability().equals(false)) {
+                subscriptionRepository.deleteAllByInitiatorId(userId);
+            }
         }
         if (updateUserDto.getEmail() != null) {
             user.setEmail(updateUserDto.getEmail());
@@ -53,7 +60,8 @@ public class UserServiceImpl implements UserService {
         if (updateUserDto.getName() != null) {
             user.setName(updateUserDto.getName());
         }
-        return UserMapper.getUserDto(user);
+
+        return UserMapper.getUserDto(userRepository.save(user));
     }
 
     @Override

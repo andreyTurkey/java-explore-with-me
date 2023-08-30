@@ -183,11 +183,11 @@
               "const source = JSON.parse(pm.request.body.raw);",
               "const target = pm.response.json();",
               "",
-              "pm.test(\"Пользователь должен содержать поля: id, name, email, subscription\", function () {",
+              "pm.test(\"Пользователь должен содержать поля: id, name, email, subscriptionAvailability\", function () {",
               "pm.expect(target).to.have.property('id');",
               "pm.expect(target).to.have.property('name');",
               "pm.expect(target).to.have.property('email');",
-              "pm.expect(target).to.have.property('subscription');",
+              "pm.expect(target).to.have.property('subscriptionAvailability');",
               "});",
               "",
               "pm.test(\"Данные в ответе должны соответствовать данным в запросе\", function () {",
@@ -640,7 +640,7 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "http://localhost:8080/subscription/3/events/1",
+              "raw": "http://localhost:8080/subscription/events/1",
               "protocol": "http",
               "host": [
                 "localhost"
@@ -648,7 +648,6 @@
               "port": "8080",
               "path": [
                 "subscription",
-                "3",
                 "events",
                 "1"
               ]
@@ -692,6 +691,118 @@
             }
           },
           "response": []
+        }
+      ]
+    },
+    {
+      "name": "Get Initiators and Subscribers",
+      "item": [
+        {
+          "name": "Получение всех стартеров пользователя",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Ответ должен содержать код статуса 200 и данные в формате json\", function () {",
+                  "    pm.response.to.be.ok;    ",
+                  "    pm.response.to.be.withBody;",
+                  "    pm.response.to.be.json;",
+                  "});",
+                  "",
+                  "const target = pm.response.json();",
+                  "",
+                  "pm.test(\"Должен быть найдено только два пользователя по заданному фильтру\", function () {",
+                  "    pm.expect(target.length).to.eql(2);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/subscription/3",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "subscription",
+                "3"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Получение всех подписчиков",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Ответ должен содержать код статуса 200 и данные в формате json\", function () {",
+                  "    pm.response.to.be.ok;    ",
+                  "    pm.response.to.be.withBody;",
+                  "    pm.response.to.be.json;",
+                  "});",
+                  "",
+                  "const target = pm.response.json();",
+                  "",
+                  "pm.test(\"Должен быть найдено только один пользователь по заданному фильтру\", function () {",
+                  "    pm.expect(target.length).to.eql(1);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/subscription/starter/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "subscription",
+                "starter",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              ""
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Ответ должен содержать код статуса 200 и данные в формате json\", function () {",
+              "    pm.response.to.be.ok;    ",
+              "    pm.response.to.be.withBody;",
+              "    pm.response.to.be.json;",
+              "});"
+            ]
+          }
         }
       ]
     }

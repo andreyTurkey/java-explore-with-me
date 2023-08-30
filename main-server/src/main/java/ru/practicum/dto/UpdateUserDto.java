@@ -18,5 +18,5 @@ public class UpdateUserDto {
 
     String email;
 
-    Boolean subscription;
+    Boolean subscriptionAvailability;
 }

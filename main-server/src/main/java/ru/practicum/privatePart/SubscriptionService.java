@@ -10,9 +10,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.dto.EventShortDto;
 import ru.practicum.dto.SubscriptionDto;
+import ru.practicum.dto.UserDto;
 import ru.practicum.exception.NotAvailableException;
 import ru.practicum.mapper.EventMapper;
 import ru.practicum.mapper.SubscriptionMapper;
+import ru.practicum.mapper.UserMapper;
 import ru.practicum.model.Event;
 import ru.practicum.model.State;
 import ru.practicum.model.User;
@@ -50,18 +52,16 @@ public class SubscriptionService {
     }
 
     public List<EventShortDto> getAllSubscriptionEvents(Long subscriberId, Integer from, Integer size) {
-        Sort sortById = Sort.by(Sort.Direction.DESC, "id");
-        Pageable page = PageRequest.of(from > 0 ? from / size : 0, size, sortById);
+        throwException(subscriberId);
+        Pageable page = PageRequest.of(from > 0 ? from / size : 0, size);
         return subscriptionRepository.findBySubscriberId(subscriberId, State.PUBLISHED, page)
                 .stream()
                 .map(EventMapper::getEventShortDto)
                 .collect(Collectors.toList());
     }
 
-    public List<EventShortDto> getEventsByInitiatorId(Long subscriberId, Long initiatorId, Integer from, Integer size) {
-        throwException(subscriberId);
+    public List<EventShortDto> getEventsByInitiatorId(Long initiatorId, Integer from, Integer size) {
         throwException(initiatorId);
-
         Sort sortById = Sort.by(Sort.Direction.DESC, "id");
         Pageable page = PageRequest.of(from > 0 ? from / size : 0, size, sortById);
         List<Event> events = eventRepository.findByInitiatorIdAndState(initiatorId, State.PUBLISHED, page).getContent();
@@ -72,9 +72,35 @@ public class SubscriptionService {
     }
 
     private void throwException(Long initiatorId) {
-        if (!userRepository.getReferenceById(initiatorId).getSubscription()) {
+        if (!userRepository.getReferenceById(initiatorId).getSubscriptionAvailability()) {
             throw new NotAvailableException("Пользователь отменил подписку на свои события");
         }
+    }
+
+    public void deleteSubscription(Long subscriberId, Long initiatorId) {
+        subscriptionRepository.deleteBySubscriberIdAndInitiatorId(subscriberId, initiatorId);
+    }
+
+    public List<UserDto> getStartersBySubscriber(Long subscriberId, Integer from, Integer size) {
+        throwException(subscriberId);
+        Sort sortById = Sort.by(Sort.Direction.DESC, "id");
+        Pageable page = PageRequest.of(from > 0 ? from / size : 0, size, sortById);
+
+        return subscriptionRepository.getStarters(subscriberId, page)
+                .stream()
+                .map(UserMapper::getUserDto)
+                .collect(Collectors.toList());
+    }
+
+    public List<UserDto> getSubscribersByStarter(Long initiatorId, Integer from, Integer size) {
+        throwException(initiatorId);
+        Sort sortById = Sort.by(Sort.Direction.DESC, "id");
+        Pageable page = PageRequest.of(from > 0 ? from / size : 0, size, sortById);
+
+        return subscriptionRepository.getSubscribers(initiatorId, page)
+                .stream()
+                .map(UserMapper::getUserDto)
+                .collect(Collectors.toList());
     }
 }
 
