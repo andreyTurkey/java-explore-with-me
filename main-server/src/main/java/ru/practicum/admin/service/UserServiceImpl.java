@@ -8,11 +8,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.dto.UpdateUserDto;
 import ru.practicum.dto.UserDto;
 import ru.practicum.exception.DuplicationException;
 import ru.practicum.mapper.UserMapper;
 import ru.practicum.model.NewUserRequest;
 import ru.practicum.model.User;
+import ru.practicum.repository.SubscriptionRepository;
 import ru.practicum.repository.UserRepository;
 
 import javax.persistence.EntityNotFoundException;
@@ -27,14 +29,39 @@ public class UserServiceImpl implements UserService {
 
     UserRepository userRepository;
 
+    SubscriptionRepository subscriptionRepository;
+
     @Override
     @Transactional
     public UserDto addUser(NewUserRequest newUserRequest) {
         if (userRepository.existsByName(newUserRequest.getName())) {
             throw new DuplicationException("Имя уже существует.");
         }
+        if (newUserRequest.getSubscription() == null) {
+            newUserRequest.setSubscription(true);
+        }
         userRepository.save(UserMapper.getUser(newUserRequest));
         return UserMapper.getUserDto(userRepository.findByEmail(newUserRequest.getEmail()));
+    }
+
+    @Override
+    @Transactional
+    public UserDto changeUser(UpdateUserDto updateUserDto, Long userId) {
+        User user = userRepository.getReferenceById(userId);
+        if (updateUserDto.getSubscriptionAvailability() != null) {
+            user.setSubscriptionAvailability(updateUserDto.getSubscriptionAvailability());
+            if (updateUserDto.getSubscriptionAvailability().equals(false)) {
+                subscriptionRepository.deleteAllByInitiatorId(userId);
+            }
+        }
+        if (updateUserDto.getEmail() != null) {
+            user.setEmail(updateUserDto.getEmail());
+        }
+        if (updateUserDto.getName() != null) {
+            user.setName(updateUserDto.getName());
+        }
+
+        return UserMapper.getUserDto(userRepository.save(user));
     }
 
     @Override

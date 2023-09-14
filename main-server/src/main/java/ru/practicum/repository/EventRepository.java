@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import ru.practicum.model.Event;
+import ru.practicum.model.State;
 import ru.practicum.searchingService.SearchingEventsByParameters;
 
 import java.util.Collection;
@@ -26,4 +27,6 @@ public interface EventRepository extends JpaRepository<Event, Long>, SearchingEv
     List<Event> getEventByInitiatorId(@Param("userId") Long userId);
 
     Boolean existsByCategoryId(Integer id);
+
+    Page<Event> findByInitiatorIdAndState(Long userId, State state, Pageable page);
 }
