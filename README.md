@@ -27,7 +27,11 @@ ___
 
 For deployment, it is better to use Docker.  
 
-Diagram of DB: main-server/src/resources/diagram.jpeg
+Diagram of DB: main-server/src/resources/diagram.jpeg  
+
+____
+
+I plan to add Spring Security in the near future.
 
 
 
