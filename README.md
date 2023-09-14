@@ -27,10 +27,7 @@ ___
 
 For deployment, it is better to use Docker.  
 
-Diagram of DB:
-
-![86231E73-6B4E-4829-BCC2-BE47B4F42BD6.jpeg](..%2F..%2F..%2FPictures%2FPhotos%20Library.photoslibrary%2Foriginals%2F8%2F86231E73-6B4E-4829-BCC2-BE47B4F42BD6.jpeg)
-
+Diagram of DB: main-server/src/resources/diagram.jpeg
 
 
 
